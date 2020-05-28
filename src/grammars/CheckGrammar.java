@@ -192,54 +192,112 @@ public class CheckGrammar extends javax.swing.JFrame {
                 j++;
             }
         }
-        
-        //model.setValueAt("#1", 1, 1);
-        
-        List<Production> productions = new ArrayList<>();
-        productions = grammar.getProductions();
+       
+             
+        //Set for the SetSelection of each N
         Recognizer a =  new Recognizer(grammar);
         List<Terminal> terminals = new ArrayList<>();
-        
-        terminals = a.getSelectionProduction().get(0);
+     
         
         //SE LLENA LA TABLA CON LAS OPERACIONES CORRESPONDIENTES
         
-        /*
         int k = 1;
-        String a = #+k;
-        int n = grammar.getProductions().size();
+        String b = "#"+k;
+        int m = grammar.getProductions().size();
         int i = 0;
-        int row = 1;
-        Hasmap seleccion
-        currentN = grammar.getLeftSiders().get(i).toString();
-        while(i<n){
+        int row = 0;
+        int indexOfColumn;
+        
+        indexOfColumn = returnColumn(model,"¬");
+        model.setValueAt("A", model.getRowCount()-1, model.getColumnCount()-1);
+        
+        String currentN;
+        while(i<m){
             
-            
-            v[] = seleccion[i]
-            for(int j=0;j<v.leng;j++){
-            int indexOfColumn = returnColumn(model,v[j]) 
-            
-            model.setValueAt(a,row,indexOfColumn)
-            if(!grammar.getLeftSiders().get(i+1).toString.equals(currentN))row++;                 
+        
+            currentN = grammar.getProductions().get(i).getLeftSide().toString();
+            terminals = a.getSelectionProduction().get(i);      
+            for(int s = 0; s < terminals.size();s++){
+                indexOfColumn = returnColumn(model,terminals.get(s).toString());
+                model.setValueAt(b,row,indexOfColumn);              
             }
             
-            a = a.lenght-1;
-            a = a+(k+1)
+            if((i+1)<m){
+            if(!grammar.getProductions().get(i+1).getLeftSide().toString().equals(currentN)){
+                row++;
+               
+            }}
+            
+            String operation = toStringRightSide(i);
+            System.out.println(b+": "+getTransition(operation));
+            
+            b = b.substring(0,1);
+            k++;
+            b = b+k;
             i++;
            
-            System.out.println(grammar.getLeftSiders().get(i).toString());
-            System.out.println(productions.get(i).rightSide);
+            //System.out.println(grammar.getLeftSiders().get(i).toString());
+            //System.out.println(productions.get(i).rightSide);
         }
-        */
-        
+        System.out.println("\n");
         model.setValueAt("▼", rows, 0);
-        
+        /*
+        for(int i = 0;i < grammar.getProductions().size();i++){
+            System.out.println(grammar.getProductions().get(i).getLeftSide().toString());
+        }
+       
+        */
         
         
     }
+    public String toStringRightSide(int position){
+        
+        List<Production> productions = new ArrayList<>();
+        productions = grammar.getProductions();
+        
+        return productions.get(position).rightSide.toString();
+    
+    }
+    
+    public String getTransition(String operation){
+        
+        
+        String finalTransition = reverseTransition(operation);
+        
+        if(operation.charAt(1)=='<') return " Replace ("+finalTransition+")"+" , "+" retenga";
+        if(operation.equals("[λ]")) return " Desapile, retenga";
+        if(operation.length()==3) return " Desapile, avance";
+        return " Replace ("+finalTransition.substring(0, finalTransition.length()-1)+")"+" , "+" avance";
+    
+    }
     
     
-    public int returnColunm(DefaultTableModel model, String terminal){
+    public String reverseTransition(String transition){
+        
+        
+        String answer = "";
+        char[] v = transition.toCharArray();
+        for(int i = transition.length()-1;i > 0;i--){
+           
+            if(v[i] == '[') continue;
+            if(v[i] == ',') continue;
+            if(v[i] == ' ') continue;
+            if(v[i] == ']') continue;
+            if(v[i] == '<'){
+                answer = answer+">";
+            }else{
+            if(v[i] == '>'){
+                answer = answer+"<";
+            }else{
+            answer = answer + String.valueOf(v[i]);
+            }          
+        }
+        }   
+    return answer;
+    }
+    
+    
+    public int returnColumn(DefaultTableModel model, String terminal){
         
         for(int i=0;i < model.getColumnCount();i++){
             if(model.getColumnName(i).equals(terminal)) return i;

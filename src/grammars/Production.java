@@ -175,6 +175,9 @@ public class Production {
         return isAlpha;
     }
 
+    
+
+    
     /**
      * This method will return the terminals of the alpha part
      *
